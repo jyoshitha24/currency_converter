@@ -1,0 +1,60 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class CurrencyConverter {
+    private static final Map<String, Double> exchangeRates = new HashMap<>() {{
+        put("USD", 1.0);    // Base currency
+        put("EUR", 0.85);   // 1 USD = 0.85 EUR
+        put("GBP", 0.75);   // 1 USD = 0.75 GBP
+        put("JPY", 110.0);  // 1 USD = 110.0 JPY
+        put("INR", 74.0);   // 1 USD = 74.0 INR
+    }};
+
+    public static double convertCurrency(double amount, String fromCurrency, String toCurrency) {
+        if (!exchangeRates.containsKey(fromCurrency)) {
+            throw new IllegalArgumentException("Unsupported currency: " + fromCurrency);
+        }
+        if (!exchangeRates.containsKey(toCurrency)) {
+            throw new IllegalArgumentException("Unsupported currency: " + toCurrency);
+        }
+        double baseAmount = amount / exchangeRates.get(fromCurrency);
+        return baseAmount * exchangeRates.get(toCurrency);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Welcome to the Currency Converter!");
+
+        while (true) {
+            try {
+                System.out.print("Enter the amount to convert: ");
+                double amount = scanner.nextDouble();
+                
+                System.out.print("Enter the currency to convert from (e.g., USD, EUR, GBP, JPY, INR): ");
+                String fromCurrency = scanner.next().toUpperCase();
+
+                System.out.print("Enter the currency to convert to (e.g., USD, EUR, GBP, JPY, INR): ");
+                String toCurrency = scanner.next().toUpperCase();
+
+                double convertedAmount = convertCurrency(amount, fromCurrency, toCurrency);
+                System.out.printf("%.2f %s is equal to %.2f %s%n", amount, fromCurrency, convertedAmount, toCurrency);
+
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            } catch (Exception e) {
+                System.out.println("An error occurred: " + e.getMessage());
+            }
+
+            System.out.print("Do you want to perform another conversion? (yes/no): ");
+            String anotherConversion = scanner.next().trim().toLowerCase();
+            if (!anotherConversion.equals("yes")) {
+                break;
+            }
+        }
+
+        System.out.println("Thank you for using the Currency Converter!");
+        scanner.close();
+    }
+}
+
